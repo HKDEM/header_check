@@ -45,12 +45,13 @@ def main():
 
     # assigns parsed command line argumants to args
     args = parser.parse_args()
-    # assigns target to target veriable
+    # assigns url/ip to target veriable if it given as arg 
     target = args.target
     
     
     # check if -heaader called
     if args.header:
+        # Ask for url/ip if not given as arg
         if not target:
             target = input("Enter the target URL or IP address: ")
         # go to the fucntion with the header that wanted
