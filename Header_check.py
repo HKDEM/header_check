@@ -1,8 +1,11 @@
 import argparse
 import requests
+# Define a dictionary with headers as keys and their solutions as values
+HEADER_SOLUTIONS = {
+    "E-tag": "Solution: Hey",
+}
 
-
-def check_headers(target, headers_to_display=None):
+def check_headers(target, headers_to_display=None, show_solutions = False):
     # Opening try catch against http request problems
     try:
         if target:
@@ -18,12 +21,15 @@ def check_headers(target, headers_to_display=None):
             if headers_to_display:
                 #Printing the spesific header
                 print(f"Target: {target}")
-                print("Requested Headers:")
                 for header in headers_to_display:
                     if header in headers:
+                        print("Requested Headers:")
                         print(f"{header}: {headers[header]}")
-                    else:
+                    elif show_solutions and header in HEADER_SOLUTIONS:
                         print(f"{header}: Header not found or misconfigured")
+                        print(HEADER_SOLUTIONS[header])
+                    else:
+                        print(f"{header}: Header not found or misconfigured. For solutions -solution")
             # in case of not getting a spesific header prints all headers that can be found
             else:
                 print(f"Target: {target}")
@@ -42,6 +48,8 @@ def main():
     parser.add_argument("target", nargs="?", help="The URL or IP address to check")
     # -header header arg for spesific header check
     parser.add_argument("-header", nargs="+", help="Specify which response headers to check")
+    # Solutions for missing or misconfigured headers
+    parser.add_argument("-solution", action="store_true", help="Show solutions for missing or misconfigured headers")
 
     # assigns parsed command line argumants to args
     args = parser.parse_args()
@@ -54,8 +62,8 @@ def main():
         # Ask for url/ip if not given as arg
         if not target:
             target = input("Enter the target URL or IP address: ")
-        # go to the fucntion with the header that wanted
-        check_headers(target, args.header)
+        # go to the fucntion with the header that wanted and solution arg info
+        check_headers(target, args.header, args.solution)
     else:
         if not target:
             target = input("Enter the target URL or IP address: ")
