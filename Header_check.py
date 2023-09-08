@@ -1,9 +1,6 @@
 import argparse
 import requests
-# Define a dictionary with headers as keys and their solutions as values
-HEADER_SOLUTIONS = {
-    "E-tag": "Solution: Hey",
-}
+from headers import check_header
 
 def check_headers(target, headers_to_display=None, show_solutions = False):
     # Opening try catch against http request problems
@@ -22,14 +19,12 @@ def check_headers(target, headers_to_display=None, show_solutions = False):
                 #Printing the spesific header
                 print(f"Target: {target}")
                 for header in headers_to_display:
-                    if header in headers:
-                        print("Requested Headers:")
-                        print(f"{header}: {headers[header]}")
-                    elif show_solutions and header in HEADER_SOLUTIONS:
-                        print(f"{header}: Header not found or misconfigured")
-                        print(HEADER_SOLUTIONS[header])
-                    else:
-                        print(f"{header}: Header not found or misconfigured. For solutions -solution")
+                    #Printing the spesific header
+                    print(f"Target: {target}")
+                    # Checking the header with check_header func in headers.py
+                    for header in headers_to_display:
+                        header_value = headers.get(header)
+                        check_header(header_value, header, show_solutions)
             # in case of not getting a spesific header prints all headers that can be found
             else:
                 print(f"Target: {target}")
