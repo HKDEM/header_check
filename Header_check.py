@@ -1,6 +1,50 @@
 import argparse
 import requests
-from headers import check_header
+#from headers import check_header
+
+
+def check_header(header_value, header_name, show_solutions=False):
+    if header_name == "Strict-Transport-Security":
+        # Check if the header is missing entirely
+        if not header_value:
+            print("Strict-Transport-Security header is missing.")
+            if show_solutions:
+                print("Solution: Add a Strict-Transport-Security header to enforce HTTPS.")
+            return
+
+        # Split the header value into key-value pairs
+        directives = header_value.split(";")
+
+        # Check if max-age directive is present and set to a reasonable value (e.g., one year)
+        max_age_directive = [directive.strip() for directive in directives if directive.startswith("max-age=")]
+        if not max_age_directive:
+            print("Strict-Transport-Security header is missing the max-age directive.")
+            if show_solutions:
+                print("Solution: Add the max-age directive to specify the duration.")
+            return
+        elif max_age_directive[0] != "max-age=31536000" and max_age_directive[0] != "max-age=63072000":
+            print(f"Strict-Transport-Security max-age directive is set to {max_age_directive[0]}, which may be too short.")
+            if show_solutions:
+                print("Solution: Set the max-age directive to a longer duration (e.g., max-age=31536000 for one year).")
+
+        # Check for other directives (includeSubDomains, preload, etc.)
+        for directive in directives:
+            directive = directive.strip()
+            if directive == "includeSubDomains":
+                print("Strict-Transport-Security includes the 'includeSubDomains' directive.")
+                print("This is recommended to enforce HSTS for all subdomains.")
+            elif directive == "preload":
+                print("Strict-Transport-Security includes the 'preload' directive.")
+                print("This indicates that the site is included in the HSTS preload list.")
+                print("It's recommended for increased security, but you should review the preload list requirements.")
+    
+        # If no misconfigurations found, return Value
+        print(header_value)
+
+
+
+
+
 
 def check_headers(target, headers_to_display=None, show_solutions = False):
     # Opening try catch against http request problems
