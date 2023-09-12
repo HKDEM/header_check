@@ -42,6 +42,52 @@ def check_header(header_value, header_name, show_solutions=False):
         print(header_value)
 
 
+    #X-FRAME-OPTIONS
+    elif header_name == "X-Frame-Options":
+        # Check if the header is missing entirely
+        if not header_value:
+            print("X-Frame-Options header is missing.")
+            if show_solutions:
+                print("Solution: Add an X-Frame-Options header to control framing behavior.")
+        else:
+            # Split the header value into individual directives
+            directives = header_value.split(";")
+
+            # Check for valid directives
+            for directive in directives:
+                directive = directive.strip()
+                if directive in ["DENY", "SAMEORIGIN"]:
+                    continue
+                elif directive.startswith("ALLOW-FROM"):
+                    print(f"X-Frame-Options directive '{directive}' is not recommended.")
+                    if show_solutions:
+                        print("Solution: Use 'DENY' or 'SAMEORIGIN' to prevent clickjacking.")
+                else:
+                    print(f"Invalid X-Frame-Options directive: '{directive}'.")
+                    if show_solutions:
+                        print("Solution: Use 'DENY' or 'SAMEORIGIN' to prevent clickjacking.")
+
+        # If no misconfigurations found, return Value
+        print(header_value)
+    
+
+    #X-CONTENT-TYPE-OPTIONS
+    elif header_name == "X-Content-Type-Options":
+        # Check if the header is missing entirely
+        if not header_value:
+            print("X-Content-Type-Options header is missing.")
+            if show_solutions:
+                print("Solution: Add an X-Content-Type-Options header to prevent MIME sniffing.")
+        else:
+            # Check if the header value is 'nosniff'
+            if header_value.strip().lower() != "nosniff":
+                print(f"X-Content-Type-Options value '{header_value}' is not set to 'nosniff'.")
+                if show_solutions:
+                    print("Solution: Set the X-Content-Type-Options header value to 'nosniff'.")
+
+        # If no misconfigurations found, return Value
+        print(header_value)
+
 
 
 
