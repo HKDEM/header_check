@@ -111,6 +111,37 @@ def check_header(header_value, header_name, show_solutions=False):
 
 
 
+    # PUBLIC-KEY-PINS
+    if header_name == "Public-Key-Pins":
+        # Check if the header is missing entirely
+        if not header_value:
+            print("Public-Key-Pins header is missing.")
+            if show_solutions:
+                print("Solution: Add a Public-Key-Pins header to enhance security.")
+            return
+
+        # Split the header value into key-value pairs
+        pins = header_value.split(";")
+
+        # Check for required pins
+        has_required_pins = False
+        for pin in pins:
+            if pin.strip().startswith("pin-sha256"):
+                has_required_pins = True
+                break
+
+        if not has_required_pins:
+            print("Public-Key-Pins header is missing required pins.")
+            if show_solutions:
+                print("Solution: Include at least one 'pin-sha256' directive in the header.")
+                print("Example: Public-Key-Pins: pin-sha256=\"your_public_key_here\"; max-age=3600")
+
+        # If no misconfigurations found, return Value
+        print(header_value)
+
+
+
+
 
 def check_headers(target, headers_to_display=None, show_solutions = False):
     # Opening try catch against http request problems
