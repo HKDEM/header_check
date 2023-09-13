@@ -88,6 +88,26 @@ def check_header(header_value, header_name, show_solutions=False):
         # If no misconfigurations found, return Value
         print(header_value)
 
+    #X-XSS-PROTECTION
+    elif header_name == "X-XSS-Protection":
+        # Check if the header is missing entirely
+        if not header_value:
+            print("X-XSS-Protection header is missing.")
+            if show_solutions:
+                print("Solution: Add an X-XSS-Protection header to enable or configure XSS protection.")
+        else:
+            # Check the header value for specific configurations
+            if header_value.lower() == "0":
+                print("X-XSS-Protection is disabled.")
+                if show_solutions:
+                    print("Solution: Set X-XSS-Protection to '1; mode=block' to enable protection.")
+            elif header_value.lower() != "1; mode=block":
+                print(f"X-XSS-Protection is set to an unexpected value: {header_value}")
+                if show_solutions:
+                    print("Solution: Configure X-XSS-Protection with '1; mode=block' for maximum protection.")
+        
+        # If no misconfigurations found, return Value
+        print(header_value)
 
 
 
