@@ -225,7 +225,6 @@ def check_header(header_value, header_name):
 
         # Check for multiple instances of CSP header
         if csp_value.count("Content-Security-Policy") > 1:
-            print(colored("Severity: Medium", "yellow"))
             print(colored("Multiple instances of 'Content-Security-Policy' header found in the response.", "yellow"))
             print(colored("Security Risk: Conflicting policies may lead to unexpected behavior.", "yellow"))
             print("Solution: Remove duplicate CSP headers to ensure consistent policy enforcement.")
@@ -242,7 +241,6 @@ def check_header(header_value, header_name):
                 repeated_directives.add(directive)
 
         if repeated_directives:
-            print(colored("Severity: Medium", "yellow"))
             print(colored("Repeated CSP directives found within the same CSP header.", "yellow"))
             print(colored("Security Risk: Repeated directives have no additional effect and can lead to policy misconfigurations.", "yellow"))
             print("Solution: Remove duplicated directives to ensure proper CSP configuration.")
