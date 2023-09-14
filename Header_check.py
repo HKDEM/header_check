@@ -45,7 +45,6 @@ def check_header(header_value, header_name):
                 print(colored("It's recommended for increased security, but you should review the preload list requirements.", "green"))
     
         # If no misconfigurations found, return Value
-        # Info severity for no issues
         print(colored(header_value, "blue"))
         print(colored("No security risks identified. Strict-Transport-Security header is properly configured.", "blue"))
 
