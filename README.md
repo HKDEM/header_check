@@ -56,3 +56,16 @@ python header_checker.py example.com -header X-Frame-Options X-XSS-Protection
 - Yellow: Medium severity (potential risk).
 - Green: Low severity (recommendation).
 - Blue: No security risks identified (properly configured).
+
+## Header Checks
+This tool performs detailed checks on the following HTTP response headers:
+
+-Strict-Transport-Security (HSTS)
+-X-Frame-Options
+-X-Content-Type-Options
+-X-XSS-Protection
+-Access-Control-Allow-Origin
+-Public-Key-Pins
+-Content-Security-Policy (CSP)
+
+Each header is evaluated for potential misconfigurations and security risks, and solutions are provided for addressing any issues found.
