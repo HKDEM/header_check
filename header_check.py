@@ -30,6 +30,7 @@ def check_header(header_value, header_name):
             print(colored(f"Strict-Transport-Security max-age directive is set to {max_age_directive[0]}, which may be too short.", "yellow"))
             print(colored("Security Risk: A short max-age directive reduces the effectiveness of HSTS and may require more frequent updates.", "red"))
             print("Solution: Set the max-age directive to a longer duration (e.g., max-age=31536000 for one year).")
+            return
 
         # Check for other directives (includeSubDomains, preload, etc.)
         for directive in directives:
@@ -38,11 +39,13 @@ def check_header(header_value, header_name):
                 # Low severity for optional directive
                 print(colored("Strict-Transport-Security includes the 'includeSubDomains' directive.", "green"))
                 print(colored("This is recommended to enforce HSTS for all subdomains.", "green"))
+                return
             elif directive == "preload":
                 # Low severity for optional directive
                 print(colored("Strict-Transport-Security includes the 'preload' directive.", "green"))
                 print(colored("This indicates that the site is included in the HSTS preload list.", "green"))
                 print(colored("It's recommended for increased security, but you should review the preload list requirements.", "green"))
+                return
     
         # If no misconfigurations found, return Value
         print(colored(header_value, "blue"))
@@ -72,12 +75,12 @@ def check_header(header_value, header_name):
                 print(colored(f"X-Frame-Options directive '{directive}' is not recommended.", "yellow"))
                 print(colored("Security Risk: ALLOW-FROM directive allows framing from specific domains, but it can be risky if not configured properly. It may open your site to clickjacking attacks if misconfigured.", "red"))
                 print("Solution: Use 'DENY' or 'SAMEORIGIN' to prevent clickjacking.")
-                
+                return
             else:
                 print(colored(f"Invalid X-Frame-Options directive: '{directive}'.", "yellow"))
                 print(colored("Security Risk: Invalid or unrecognized directives in X-Frame-Options may not provide the intended protection against clickjacking.", "red"))
                 print("Solution: Use 'DENY' or 'SAMEORIGIN' to prevent clickjacking.")
-                
+                return
 
         # If no misconfigurations found, return Value
         print(colored(header_value, "blue"))
@@ -98,6 +101,7 @@ def check_header(header_value, header_name):
             if header_value.strip().lower() != "nosniff":
                 print(colored(f"The X-Content-Type-Options header value '{header_value}' is not set to 'nosniff', which can lead to MIME type sniffing attacks.", "red"))
                 print("Solution: Set the X-Content-Type-Options header value to 'nosniff'.")
+                return
 
         # If no misconfigurations found, return Value
         print(colored(header_value, "blue"))
@@ -119,10 +123,12 @@ def check_header(header_value, header_name):
                 print(colored("X-XSS-Protection is disabled.", "yellow"))
                 print(colored("Security Risk: X-XSS-Protection is currently disabled, which may leave your site vulnerable to XSS attacks.", "red"))
                 print("Solution: Set X-XSS-Protection to '1; mode=block' to enable protection.")
+                return
             elif header_value.lower() != "1; mode=block":
                 print(colored(f"X-XSS-Protection is set to an unexpected value: '{header_value}'", "yellow"))
                 print(colored("Security Risk: X-XSS-Protection is not properly configured, which may leave your site vulnerable to XSS attacks.", "red"))
                 print("Solution: Configure X-XSS-Protection with '1; mode=block' for maximum protection.")
+                return
         
         # If no misconfigurations found, return Value
         print(colored(header_value, "blue"))
@@ -144,6 +150,7 @@ def check_header(header_value, header_name):
                 print(colored("Access-Control-Allow-Origin allows all domains ('*').", "yellow"))
                 print(colored("Security Risk: Allowing all domains may be too permissive and pose security risks. It's recommended to limit the allowed origins to specific trusted domains.", "red"))
                 print("Solution: Limit the Access-Control-Allow-Origin header to specific trusted domains.")
+                return
           
         # If no misconfigurations found, return Value
         print(colored(header_value, "blue"))
@@ -173,6 +180,7 @@ def check_header(header_value, header_name):
             print(colored("Public-Key-Pins header is missing required pins.", "yellow"))
             print(colored("Security Risk: The Public-Key-Pins header is missing the required 'pin-sha256' directive, which is crucial for security. Without it, the header is ineffective.", "red"))
             print("Solution: Include at least one 'pin-sha256' directive in the header.")
+            return
         
         print(colored(header_value, "blue"))
         print(colored("No security risks identified. Public-Key-Pins header is properly configured.", "blue"))
@@ -244,6 +252,7 @@ def check_header(header_value, header_name):
             print(colored("Repeated CSP directives found within the same CSP header.", "yellow"))
             print(colored("Security Risk: Repeated directives have no additional effect and can lead to policy misconfigurations.", "yellow"))
             print("Solution: Remove duplicated directives to ensure proper CSP configuration.")
+            return
 
         # If no misconfigurations found, return Value
         print(colored(header_value, "blue"))
