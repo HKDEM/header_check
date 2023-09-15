@@ -288,8 +288,6 @@ def check_header(header_value, header_name):
         print("This header is not checked for misconfigurations.")
 
 
-
-
 def check_headers(target, headers_to_display=None):
     # Opening try catch against http request problems
     try:
@@ -326,8 +324,8 @@ def check_headers(target, headers_to_display=None):
 
 def main():
     #--help arg explantions
-    parser = argparse.ArgumentParser(description="Check HTTP response headers of a target URL or IP. Can be used directly putting target url/IP after py file or can be put in when run")
-    parser.add_argument("target", nargs="?", help="The URL or IP address to check")
+    parser = argparse.ArgumentParser(description="Check HTTP response headers of a target URL or IP. Can be used directly putting target url/IP after py file or can be put in when run.")
+    parser.add_argument("target", nargs="?", help="The URL or IP address to check. If not provided, you will be prompted to enter it.")
     # -header header arg for spesific header check
     parser.add_argument("-header", nargs="+", help="Specify which response headers to check")
 
