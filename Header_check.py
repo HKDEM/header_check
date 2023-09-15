@@ -249,7 +249,11 @@ def check_header(header_value, header_name):
         print(colored(header_value, "blue"))
         print(colored("No security risks identified. CSP header is properly configured.", "blue"))
 
-
+    #For other headers that doesn't get checked
+    else:
+        # Header name is not recognized
+        print(colored(f"Header '{header_name}' is missing.","red"))
+        print("This header is not checked for misconfigurations.")
 
 
 
