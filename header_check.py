@@ -182,6 +182,29 @@ def check_header(header_value, header_name):
             print("Solution: Include at least one 'pin-sha256' directive in the header.")
             return
         
+        #Check for expiration (max-age) directive
+        max_age_directive = [directive.strip() for directive in pins if directive.startswith("max-age=")]
+        if max_age_directive:
+            max_age_value = int(max_age_directive[0].split("=")[1])
+            if max_age_value < 31536000:  # One year in seconds
+                print(colored("Public-Key-Pins max-age directive is set to a short duration.", "yellow"))
+                print(colored("Security Risk: A short max-age directive reduces the effectiveness of HPKP and may require more frequent updates.", "red"))
+                print("Solution: Set the max-age directive to a longer duration (e.g., max-age=31536000 for one year).")
+                return
+
+        # Check for includeSubDomains directive
+        if "includeSubDomains" in pins:
+            print(colored("Public-Key-Pins includes the 'includeSubDomains' directive.", "green"))
+            print(colored("This is recommended to enforce HPKP for all subdomains.", "green"))
+            return
+
+        # Check for backup pins (additional pin-sha256 directives)
+        backup_pins = [pin for pin in pins if pin.strip().startswith("pin-sha256")]
+        if len(backup_pins) > 1:
+            print(colored(f"Multiple pin-sha256 directives found in the Public-Key-Pins header.", "green"))
+            print(colored("This allows for multiple pins, which can be useful for key rotation.", "green"))
+            return
+        
         print(colored(header_value, "blue"))
         print(colored("No security risks identified. Public-Key-Pins header is properly configured.", "blue"))
 
