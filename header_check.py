@@ -283,9 +283,13 @@ def check_header(header_value, header_name):
 
     #For other headers that doesn't get checked
     else:
-        # Header name is not recognized
-        print(colored(f"Header '{header_name}' is missing.","red"))
-        print("This header is not checked for misconfigurations.")
+        # Header is not spesificly checked
+        if not header_value:
+            print(colored(f"'{header_name}' header is missing.", "red"))
+            print("This header is not checked for any other misconfigurations.")
+            return
+        print(colored(header_value, "blue"))
+        print(colored(f"NOTE:'{header_name}' header is not checked for any detailed misconfigurations."))
 
 
 def check_headers(target, headers_to_display=None):
