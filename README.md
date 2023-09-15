@@ -1,6 +1,6 @@
 # HTTP Header Checker
 
-HTTP Header Checker is a Python script designed to check the HTTP response headers of a target URL or IP address. It helps you identify security vulnerabilities and misconfigurations in the HTTP response headers of a web server. The script checks various headers, such as Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Public-Key-Pins, and Content-Security-Policy (CSP), and provides insights into their configurations.
+HTTP Header Checker is a Python script designed to check the HTTP response headers of a target URL or IP address. It helps you identify security vulnerabilities and misconfigurations in the HTTP response headers of a web server. The script checks various headers, such as Strict-Transport-Security, Content-Security-Policy (CSP) and provides insights into their configurations.
 
 ## Features
 
@@ -60,12 +60,12 @@ python header_checker.py example.com -header X-Frame-Options X-XSS-Protection
 ## Header Checks
 This tool performs detailed checks on the following HTTP response headers:
 
--Strict-Transport-Security (HSTS)
--X-Frame-Options
--X-Content-Type-Options
--X-XSS-Protection
--Access-Control-Allow-Origin
--Public-Key-Pins
--Content-Security-Policy (CSP)
+ - Strict-Transport-Security (HSTS)
+ - X-Frame-Options
+ - X-Content-Type-Options
+ - X-XSS-Protection
+ - Access-Control-Allow-Origin
+ - Public-Key-Pins
+ - Content-Security-Policy (CSP)
 
 Each header is evaluated for potential misconfigurations and security risks, and solutions are provided for addressing any issues found.
