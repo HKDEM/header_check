@@ -90,41 +90,4 @@ def check_header(header_value, header_name, show_solutions=False):
         # If no misconfigurations found, return Value
         print(header_value)
 
-
-    #ACCESS-CONTROL-ALLOW-ORIGIN
-    elif header_name == "Access-Control-Allow-Origin":
-        # Check if the header is missing entirely
-        if not header_value:
-            print("Access-Control-Allow-Origin header is missing.")
-            if show_solutions:
-                print("Solution: Add an Access-Control-Allow-Origin header with a valid origin value (e.g., '*').")
-        else:
-            # Check if the value is a valid origin or wildcard
-            if header_value != "*" :
-                print(f"Access-Control-Allow-Origin header specifies an invalid origin: {header_value}")
-                if show_solutions:
-                    print("Solution: Use a valid origin or '*' in the Access-Control-Allow-Origin header.")
-
-        # If no misconfigurations found, return Value
-        print(header_value)
-
-
-
-
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
