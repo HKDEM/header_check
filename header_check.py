@@ -2,11 +2,14 @@ import argparse
 import requests
 from termcolor import colored  # Import termcolor for colored output
 
-def check_header(header_value, header_name):
-    
+def check_header(header_name,headers):
+
     #STRICT-TRANSPORT-SECURİTY (HSTS)
-    if header_name == "Strict-Transport-Security":
+    if header_name == "Strict-Transport-Security" or header_name == "HSTS":
         # Check if the header is missing entirely
+        
+        header_value = headers.get("Strict-Transport-Security")
+        
         if not header_value:
             # High severity for missing header
             print(colored("Strict-Transport-Security header is missing.", "red"))
@@ -55,6 +58,8 @@ def check_header(header_value, header_name):
 
     #X-FRAME-OPTIONS
     elif header_name == "X-Frame-Options":
+    
+        header_value = headers.get("X-Frame-Options")
         # Check if the header is missing entirely
         if not header_value:
             print(colored("Severity: High", "red"))
@@ -91,6 +96,7 @@ def check_header(header_value, header_name):
     #X-CONTENT-TYPE-OPTIONS
     elif header_name == "X-Content-Type-Options":
         # Check if the header is missing entirely
+        header_value = headers.get("X-Content-Type-Options")
         if not header_value:
             print(colored("X-Content-Type-Options header is missing.","red"))
             print(colored("Security Risk: Without X-Content-Type-Options, your site may be vulnerable to MIME type sniffing attacks. Attackers can trick the browser into interpreting content as a different MIME type.", "red"))
@@ -111,6 +117,8 @@ def check_header(header_value, header_name):
 
     #X-XSS-PROTECTION
     elif header_name == "X-XSS-Protection":
+    
+        header_value = headers.get("X-XSS-Protection")
         # Check if the header is missing entirely
         if not header_value:
             print(colored("X-XSS-Protection header is missing.", "red"))
@@ -138,6 +146,8 @@ def check_header(header_value, header_name):
    
     #ACCESS-CONTROL-ALLOW-ORIGIN
     elif header_name == "Access-Control-Allow-Origin":
+    
+        header_value = headers.get("Access-Control-Allow-Origin")
         # Check if the header is missing entirely
         if not header_value:
             print(colored("Access-Control-Allow-Origin header is missing.", "red"))
@@ -158,7 +168,10 @@ def check_header(header_value, header_name):
 
     
     # PUBLIC-KEY-PINS
+   
     elif header_name == "Public-Key-Pins":
+    
+        header_value = headers.get("Public-Key-Pıns")
         # Check if the header is missing entirely
         if not header_value:
             print(colored("Public-Key-Pins header is missing.", "red"))
@@ -211,7 +224,9 @@ def check_header(header_value, header_name):
 
 
     # CONTENT-SECURITY-POLICY (CSP)
-    elif header_name == "Content-Security-Policy":
+    elif header_name == "Content-Security-Policy" or header_name == "CSP":
+        
+        header_value = headers.get("Content-Security-Policy")
         # Check if the CSP header is missing entirely
         if not header_value:
             print(colored("Content Security Policy (CSP) header is missing.", "red"))
@@ -294,11 +309,13 @@ def check_header(header_value, header_name):
 
 def check_headers(target, headers_to_display=None):
     # Opening try catch against http request problems
+    impt_list = {"Strict-Transport-Security", "X-Frame-Options", "X-Content-Type-Options", "X-XSS-Protection","Content-Security-Policiy"}
+    
     try:
         if target:
             # Check if the target is a URL if not add http://
             if not target.startswith("http://") and not target.startswith("https://"):
-                target = "http://" + target
+                target = "https://" + target
             # Get response headers with request
             response = requests.get(target)
             # Get all headers app provides
@@ -310,8 +327,7 @@ def check_headers(target, headers_to_display=None):
                 print(f"Target: {target}")
                 # Checking the header with check_header func in headers.py
                 for header in headers_to_display:
-                    header_value = headers.get(header)
-                    check_header(header_value, header)
+                    check_header(header,headers)
                     
             # in case of not getting a spesific header prints all headers that can be found
             else:
@@ -319,6 +335,11 @@ def check_headers(target, headers_to_display=None):
                 print("All Headers:")
                 for key, value in headers.items():
                     print(f"{key}: {value}")
+                
+                for i in impt_list:
+                    if i not in headers:
+                        print(colored(f"{i} header is missing. Learn more with -header {i}","red"))    
+                
         else:
             print("Error: Please provide a target URL or IP address.")
 
