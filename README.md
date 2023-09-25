@@ -5,6 +5,7 @@ HTTP Header Checker is a Python script designed to check the HTTP response heade
 ## Features
 
 - Shows all avaliable response headers of the given target.
+- When checked all headers, also shows the missing headers that are important (with red highlighting).
 - Checks various HTTP headers for security misconfigurations when searched spesificly.
 - Provides detailed information about security risks and solutions.
 - Supports checking specific headers or all headers.
