@@ -14,12 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3  # This checks out the pull request code so it can be scanned
 
-      # Step 2: Check for high-risk Dependabot alerts
-      - name: Check for high-risk Dependabot alerts
+      # Step 2: Fetch Dependabot alerts from the GitHub API
+      - name: Fetch Dependabot alerts
         run: |
-          # Fetch Dependabot alerts from the GitHub API
+          # Fetch the Dependabot alerts JSON from the GitHub API
           dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts")
+
+          # Debugging: Print the raw API response for inspection
+          echo "Dependabot alerts response: $dependabot_alerts"
+
+      # Step 3: Check for high-risk Dependabot alerts
+      - name: Check for high-risk Dependabot alerts
+        run: |
+          # Fetch Dependabot alerts again (for error handling)
+          dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts")
+
+          # Check if the response is valid JSON and not empty
+          if echo "$dependabot_alerts" | jq empty; then
+            echo "Valid JSON response received."
+          else
+            echo "Error: The API response is not valid JSON or is empty."
+            exit 1  # Exit if the response is not valid JSON
+          fi
 
           # Count the number of high-risk vulnerabilities
           high_risk_alerts=$(echo $dependabot_alerts | jq '. | map(select(.severity == "high")) | length')
