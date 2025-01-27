@@ -1,0 +1,24 @@
+name: Security and Dependency Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dependabot-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch Dependabot Alerts
+        run: |
+          dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts")
+          high_or_critical_alerts=$(echo "$dependabot_alerts" | jq '. | map(select(.severity == "high" or .severity == "critical")) | length')
+          echo "High or Critical-risk alerts found: $high_or_critical_alerts"
+          if [ "$high_or_critical_alerts" -gt 0 ]; then
+            echo "::error ::High or Critical-risk vulnerabilities found: $high_or_critical_alerts"
+            exit 1  # This will fail the workflow and prevent the push
+          fi
