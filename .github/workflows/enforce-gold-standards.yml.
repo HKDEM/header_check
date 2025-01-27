@@ -1,10 +1,9 @@
 name: Enforce Gold Standards
 
 on:
-  pull_request:
+  push:
     branches:
-      - main  # This will trigger on PRs to the main branch
-      - develop  # You can also include develop or other branches if needed
+      - main
 
 jobs:
   enforce-standards:
