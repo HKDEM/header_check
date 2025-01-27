@@ -6,46 +6,31 @@ on:
       - main  # Or whatever your protected branch is
 
 jobs:
-  check-dependabot-alerts:
-    runs-on: ubuntu-latest  # Use the default GitHub runner
+  dependabot-alerts:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the code to analyze the PR
       - name: Checkout code
-        uses: actions/checkout@v3  # This checks out the pull request code so it can be scanned
+        uses: actions/checkout@v3
 
-      # Step 2: Fetch Dependabot alerts from the GitHub API
-      - name: Fetch Dependabot alerts
+      # Step 2: Set up Dependabot
+      - name: Run Dependabot Security Check
+        uses: dependabot-action/dependabot-action@v1
+        with:
+          # Add this action to check Dependabot alerts directly
+          dependabot-version: "2"  # Use Dependabot version 2 for security alerts
+
+      # Step 3: Fail if there are any high-severity alerts
+      - name: Fail if High Severity Dependabot Alerts Exist
         run: |
-          # Fetch the Dependabot alerts JSON from the GitHub API
-          dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts")
 
-          # Debugging: Print the raw API response for inspection
-          echo "Dependabot alerts response: $dependabot_alerts"
-
-      # Step 3: Check for high-risk Dependabot alerts
-      - name: Check for high-risk Dependabot alerts
-        run: |
-          # Fetch Dependabot alerts again (for error handling)
-          dependabot_alerts=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts")
-
-          # Check if the response is valid JSON and not empty
-          if echo "$dependabot_alerts" | jq empty; then
-            echo "Valid JSON response received."
-          else
-            echo "Error: The API response is not valid JSON or is empty."
-            exit 1  # Exit if the response is not valid JSON
-          fi
-
-          # Count the number of high-risk vulnerabilities
-          high_risk_alerts=$(echo $dependabot_alerts | jq '. | map(select(.severity == "high")) | length')
-
-          # If there are any high-risk alerts, fail the job and block the PR from merging
+          high_risk_alerts=$(echo "$alerts" | jq '. | map(select(.severity == "high")) | length')
           if [ "$high_risk_alerts" -gt 0 ]; then
             echo "Error: Found $high_risk_alerts high-risk Dependabot alerts. Resolve before merging."
-            exit 1  # This stops the PR if high-risk vulnerabilities are found
+            exit 1
           else
             echo "No high-risk Dependabot alerts found. Proceeding with the merge."
           fi
