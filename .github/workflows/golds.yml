@@ -2,7 +2,7 @@ name: Prevent Merge on High Severity Vulnerabilities
 
 on:
   pull_request:
-    branches:
+    branches: 
       - main
 
 permissions:
