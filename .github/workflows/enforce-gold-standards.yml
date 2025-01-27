@@ -7,8 +7,6 @@ on:
       - develop  # You can also include develop or other branches if needed
 
 jobs:
-  enforce-standards:
-    runs-on: ubuntu-latest  # This specifies the environment where the checks will run (Ubuntu in this case)
 
     steps:
       # Step 1: Checkout the code in the PR
