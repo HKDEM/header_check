@@ -1,56 +1,11 @@
-name: Dependabot Vulnerability Check
-
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
-
-permissions:
-  pull-requests: write
-  security-events: read   # Permission needed to access security alerts
+name: 'Dependency Review'
+on: [pull_request]
 
 jobs:
-  dependabot-vulnerability-check:
+  dependency-review:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'  # Ensure the workflow only runs for Dependabot PRs
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Fetch dependency review data
-        id: review_data
-        run: |
-          # Get the list of security vulnerabilities in the PR using GitHub Dependency Review API
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          DEPENDENCY_REVIEW=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/commits")
-
-          echo "Fetched dependency review data."
-
-      - name: Check for vulnerabilities
-        run: |
-          # Here you would analyze the results from Dependabot's security updates
-          # (the dependency review data) and look for critical/high vulnerabilities.
-
-          # You can also directly integrate with the GitHub Advisory Database to check vulnerabilities
-          # We are simulating a step that fails when critical vulnerabilities are found.
-          
-          # Example of simple simulation (replace with actual vulnerability check logic)
-          CRITICAL_VULN_COUNT=0
-          HIGH_VULN_COUNT=0
-
-          # Simulated check: replace with real data extraction and analysis logic
-          CRITICAL_VULN_COUNT=$(curl -s "https://api.github.com/repos/${{ github.repository }}/security/advisories" \
-            | jq '[.[] | select(.severity == "critical") ] | length')
-
-          HIGH_VULN_COUNT=$(curl -s "https://api.github.com/repos/${{ github.repository }}/security/advisories" \
-            | jq '[.[] | select(.severity == "high") ] | length')
-
-          if [ "$CRITICAL_VULN_COUNT" -gt 0 ] || [ "$HIGH_VULN_COUNT" -gt 0 ]; then
-            echo "High or Critical vulnerabilities found. Rejecting merge."
-            exit 1  # Failing the workflow will prevent the merge
-          else
-            echo "No high/critical vulnerabilities found. Merge is safe."
-          fi
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v1
