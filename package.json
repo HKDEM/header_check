@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A Node.js project with jQuery 3.2.1 to trigger Dependabot with medium severity vulnerability",
   "main": "index.js",
-  "scripts": {
+  "scripts": { 
     "start": "node index.js"
   },
   "dependencies": {
