@@ -1,4 +1,18 @@
-dependencies 
 {
-  "tar": "2.2.2" 
+  "name": "medium-vulnerable-node-project",
+  "version": "1.0.0",
+  "description": "A Node.js project with a medium severity vulnerable dependency to trigger Dependabot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "hoek": "4.2.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
 }
