@@ -1,4 +1,18 @@
-dependencies 
 {
-  "tar": "2.2.2" 
+  "name": "simple-vulnerable-node-project",
+  "version": "1.0.0",
+  "description": "A Node.js project with a simple medium-severity vulnerable dependency to trigger Dependabot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "uglify-js": "3.3.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
 }
