@@ -1,13 +1,13 @@
 {
-  "name": "simple-vulnerable-node-project",
+  "name": "jquery-vulnerable-project",
   "version": "1.0.0",
-  "description": "A Node.js project with a simple medium-severity vulnerable dependency to trigger Dependabot",
+  "description": "A Node.js project with jQuery 3.2.1 to trigger Dependabot with medium severity vulnerability",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "uglify-js": "3.3.0"
+    "jquery": "3.2.1"
   },
   "devDependencies": {},
   "engines": {
