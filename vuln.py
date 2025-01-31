@@ -1,5 +1,5 @@
 import subprocess
-
+ 
 # Dynamically installs a vulnerable package version of requests
 subprocess.run(["pip", "install", "requests==2.24.0"])
 
