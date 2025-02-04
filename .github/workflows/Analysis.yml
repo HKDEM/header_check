@@ -13,20 +13,18 @@ permissions:
 
 jobs:
   # Job 1: CodeQL Static Analysis
-  codeql-analysis:
-    name: Static Analysis with CodeQL
+  analyze:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+      - name: Set up CodeQL
+        uses: github/codeql-action/setup@v3
         with:
-          languages: python
-          queries: security-extended  # Use extended security queries for analysis
+          languages: python  # Analyze Python code
 
-      - name: Perform CodeQL Analysis
+      - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v3
 
   # Job 2: Dependency Review
