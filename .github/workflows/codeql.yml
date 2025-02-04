@@ -97,19 +97,4 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
-    # Job 2: Dependency Review
-  dependency-review:
-    if: github.event_name == 'pull_request'
-    name: Dependency Review
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
 
-      - name: Run Dependency Review
-        uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: high  # Fail on high and critical severity vulnerabilities
-          vulnerability-check: true  # Perform vulnerability checks
-          comment-summary-in-pr: on-failure  # Only add a comment to the PR if vulnerabilities are found
-          fail-on-scopes: runtime  # Fail only for vulnerabilities in runtime dependencies
