@@ -99,9 +99,11 @@ jobs:
 
     # Job 2: Dependency Review
   dependency-review:
-    if: github.event_name == 'pull_request'
-    name: Dependency Review
+    if: github.event_name == 'pull_request'  # Only run for PR events
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # Grant write permissions to comment on PRs
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
