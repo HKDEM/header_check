@@ -23,7 +23,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: javascript
+          languages: python
           queries: security-extended  # Use extended security queries for analysis
 
       - name: Perform CodeQL Analysis
