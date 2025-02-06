@@ -1,0 +1,19 @@
+{
+  "name": "vulnerable-node-project",
+  "version": "1.0.0",
+  "description": "A Node.js project with a vulnerable dependency to trigger Dependabot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "lodash": "4.17.15",
+    "tar": "2.2.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
