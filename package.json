@@ -6,7 +6,7 @@ dependencies
   "description": "A Node.js project with a vulnerable dependency to trigger Dependabot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js" 
   },
   "dependencies": {
     "lodash": "4.17.15"
