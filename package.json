@@ -1,0 +1,1 @@
+flask==1.0.2  # an old version of Flask with a known vulnerability
