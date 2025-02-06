@@ -71,3 +71,52 @@ jobs:
           vulnerability-check: true
           comment-summary-in-pr: on-failure  # Adds a comment only if vulnerabilities are found
           fail-on-scopes: runtime
+
+  # Duplication Check Job
+  duplication-check:
+    name: Detect Code Duplication
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Get more commit history
+
+      - name: Fetch full history (Fix SHA error)
+        run: git fetch --unshallow
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install jscpd
+        run: npm install -g jscpd
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          since: ${{ github.event.pull_request.base.sha }}
+          until: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run jscpd on changed files
+        run: |
+          FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "Changed files: $FILES"
+          # Debugging: check the file list
+          if [ -z "$FILES" ]; then
+            echo "No files changed. Skipping duplication check."
+            exit 0
+          fi
+          # Process each file individually if there are multiple files
+          echo "$FILES" | while read -r file; do
+            echo "Processing $file..."
+            jscpd \
+              --min-tokens 10 \
+              --threshold 1 \
+              --reporters console \
+              --ignore "**/generated/**" \
+              "$file"
+          done
+        shell: bash
