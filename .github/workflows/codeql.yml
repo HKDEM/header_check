@@ -68,7 +68,7 @@ jobs:
           vulnerability-check: true
           comment-summary-in-pr: on-failure  # Adds a comment only if vulnerabilities are found
           fail-on-scopes: runtime
-
+  
   # Code Duplication Check
   duplication_check:
     runs-on: ubuntu-latest
@@ -94,7 +94,6 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           base_sha: ${{ github.event.pull_request.base.sha }}
-          head_sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Run jscpd
         run: |
@@ -110,17 +109,18 @@ jobs:
               --reporters console,json \
               --output ./jscpd-report \
               --ignore "**/*.test.{js,jsx,ts,tsx},**/*.spec.{js,jsx,ts,tsx},**/node_modules/**,**/dist/**,**/build/**,**/.git/**" \
-              "$CHANGED_FILES"
+              $CHANGED_FILES
           else
             echo "No changed files detected. Skipping jscpd."
-
+      
       - name: Check duplication threshold
         run: |
           if [ -f "./jscpd-report/jscpd-report.json" ]; then
-            DUPLICATION=$(jq -e '.statistics.total.percentage' ./jscpd-report/jscpd-report.json) # -e for better error handling
+            DUPLICATION=$(jq -r '.statistics.total.percentage' ./jscpd-report/jscpd-report.json)
             if (( $(echo "$DUPLICATION > 10" | bc -l) )); then
               echo "Code duplication percentage ($DUPLICATION%) exceeds threshold (10%)"
               exit 1
             fi
           else
             echo "jscpd report file not found. Skipping duplication check."
+
