@@ -70,56 +70,12 @@ jobs:
           fail-on-scopes: runtime
   
   # Code Duplication Check
-  duplication_check:
-    name: Check Code Duplication
+  duplicate-code-check:
+    name: Check for duplicate code
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Check for duplicate code
+        uses: platisd/duplicate-code-detection-tool@master
         with:
-          fetch-depth: 0
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-
-      - name: Set Up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install jscpd
-        run: npm install -g jscpd
-
-      - name: Get Changed Files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-        with:
-          base_sha: ${{ github.event.pull_request.base.sha }}
-
-      - name: Run jscpd on Changed Files
-        run: |
-          CHANGED_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
-          if [[ -n "$CHANGED_FILES" ]]; then
-            echo "Scanning changed files: $CHANGED_FILES"
-            jscpd \
-              --min-tokens 30 \
-              --threshold 10 \
-              --max-lines 1000 \
-              --mode "strict" \
-              --format "javascript,typescript,jsx,tsx,yaml,yml" \
-              --reporters console,json \
-              --output ./jscpd-report \
-              --ignore "**/*.test.{js,jsx,ts,tsx,yml,yaml},**/*.spec.{js,jsx,ts,tsx,yml,yaml},**/node_modules/**,**/dist/**,**/build/**,**/.git/**" \
-              $CHANGED_FILES
-          else
-            echo "No changed files detected. Skipping jscpd."
-
-      - name: Check Duplication Threshold
-        run: |
-          if [ -f "./jscpd-report/jscpd-report.json" ]; then
-            DUPLICATION=$(jq -r '.statistics.total.percentage' ./jscpd-report/jscpd-report.json)
-            if (( $(echo "$DUPLICATION > 10" | bc -l) )); then
-              echo "Code duplication percentage ($DUPLICATION%) exceeds threshold (10%)"
-              exit 1
-            fi
-          else
-            echo "No jscpd report found. Skipping duplication check."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          directories: "."
