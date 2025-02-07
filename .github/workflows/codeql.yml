@@ -71,11 +71,21 @@ jobs:
   
   # Code Duplication Check
   duplicate-code-check:
-    name: Check for duplicate code
-    runs-on: ubuntu-latest
+    name: Check for Duplicate Code in PR
+    runs-on: ubuntu-20.04
+
     steps:
-      - name: Check for duplicate code
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Check for duplicate code in PR
         uses: platisd/duplicate-code-detection-tool@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          directories: "."
+          directories: "."  # Adjust this to specify directories you want to scan (e.g., "src/" or "test/")
+          # Optional: customize other options
+          ignore_below: 5  # Ignore similarities below 5%
+          fail_above: 70  # Fail if a file is more than 70% similar to another
+          warn_above: 15  # Warn if a file is more than 15% similar to another
+          one_comment: true  # Only create one comment and update it for consecutive runs
+          header_message_start: "Duplicate code detected in the following files:"
