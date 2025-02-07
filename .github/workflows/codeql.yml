@@ -1,4 +1,4 @@
-name: "CodeQL Advanced and Dependency Review"
+name: CodeQL Security Analysis and Dependency Review
 
 on:
   push:
@@ -18,12 +18,9 @@ jobs:
     name: Analyze (${{ matrix.language }})
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
-      # required for all workflows
-      security-events: write
-      # required to fetch internal or private CodeQL packs
-      packages: read
-      # only required for workflows in private repositories
-      actions: read
+      security-events: write  # Required for all workflows
+      packages: read  # Required to fetch internal or private CodeQL packs
+      actions: read  # Only required for workflows in private repositories
       contents: read
 
     strategy:
@@ -59,15 +56,70 @@ jobs:
   dependency-review:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: 'Checkout Repository'
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 'Dependency Review'
+      - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: high  # Will fail on high and critical severity vulnerabilities
+          fail-on-severity: high  # Fails on high and critical severity vulnerabilities
           vulnerability-check: true
           comment-summary-in-pr: on-failure  # Adds a comment only if vulnerabilities are found
           fail-on-scopes: runtime
+  
+  # Code Duplication Check
+  duplication_check:
+    name: Check Code Duplication
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install jscpd
+        run: npm install -g jscpd
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          base_sha: ${{ github.event.pull_request.base.sha }}
+
+      - name: Run jscpd on Changed Files
+        run: |
+          CHANGED_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
+          if [[ -n "$CHANGED_FILES" ]]; then
+            echo "Scanning changed files: $CHANGED_FILES"
+            jscpd \
+              --min-tokens 30 \
+              --threshold 10 \
+              --max-lines 1000 \
+              --mode "strict" \
+              --format "javascript,typescript,jsx,tsx,yaml,yml" \
+              --reporters console,json \
+              --output ./jscpd-report \
+              --ignore "**/*.test.{js,jsx,ts,tsx,yml,yaml},**/*.spec.{js,jsx,ts,tsx,yml,yaml},**/node_modules/**,**/dist/**,**/build/**,**/.git/**" \
+              $CHANGED_FILES
+          else
+            echo "No changed files detected. Skipping jscpd."
+
+      - name: Check Duplication Threshold
+        run: |
+          if [ -f "./jscpd-report/jscpd-report.json" ]; then
+            DUPLICATION=$(jq -r '.statistics.total.percentage' ./jscpd-report/jscpd-report.json)
+            if (( $(echo "$DUPLICATION > 10" | bc -l) )); then
+              echo "Code duplication percentage ($DUPLICATION%) exceeds threshold (10%)"
+              exit 1
+            fi
+          else
+            echo "No jscpd report found. Skipping duplication check."
