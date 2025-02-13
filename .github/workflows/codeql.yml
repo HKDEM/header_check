@@ -7,6 +7,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  security-events: write  # Required for uploading SARIF results
+  actions: read
+  contents: read
+
 jobs:
   static-analysis:
     name: Static Analysis
