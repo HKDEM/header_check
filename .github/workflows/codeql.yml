@@ -1,0 +1,34 @@
+name: Static Analysis with CodeQL
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  security-events: write  # Required for uploading SARIF results
+  actions: read
+  contents: read
+
+jobs:
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Initialize CodeQL for Python
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      # Step 3: Autobuild code (not needed for Python, so removed)
+
+      # Step 4: Perform CodeQL Analysis
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
