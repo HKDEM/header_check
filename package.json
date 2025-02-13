@@ -10,7 +10,7 @@ dependencies
   },
   "dependencies": {
     "lodash": "4.17.15"
-  },
+  }, 
   "devDependencies": {},
   "engines": {
     "node": ">=10.0.0"
