@@ -1,8 +1,5 @@
 name: 'Dependency Review'
 on:
-  push:
-    branches:
-      - main
   pull_request:
    types: [opened, synchronize, reopened]
 
@@ -24,5 +21,4 @@ jobs:
           fail-on-severity: high  # Will fail on high and critical severity vulnerabilities
           vulnerability-check: true
           comment-summary-in-pr: on-failure  # Adds a comment only if vulnerabilities are found
-          comment-summary-in-pr: on-failure # Creates a summary report in case of failure
-           fail-on-scopes: runtime
+          fail-on-scopes: runtime
