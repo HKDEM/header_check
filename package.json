@@ -16,6 +16,9 @@ dependencies
     "node": ">=10.0.0"
   },
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT" 
 }
- 
+
+"lodash": "4.17.20",
+"moment": "2.29.3",
+"axios": "0.21.0"
