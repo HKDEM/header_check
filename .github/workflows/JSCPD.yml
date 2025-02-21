@@ -1,0 +1,44 @@
+name: JSCPD Code Duplication Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  jscpd:
+    name: Run JSCPD
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JSCPD
+        run: npm install -g jscpd
+
+      - name: Run JSCPD
+        run: jscpd --reporters console,markdown,sarif --output report --threshold 2
+
+      - name: Upload JSCPD Report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jscpd-report
+          path: report
+
+      - name: Comment JSCPD results on PR
+        if: success() || failure() && github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: report/jscpd-report.md
+          comment-tag: jscpd-bot
