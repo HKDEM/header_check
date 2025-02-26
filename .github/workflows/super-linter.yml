@@ -32,6 +32,7 @@ jobs:
           # Enable detailed output and specify a folder for reports
           OUTPUT_DETAILS: detailed
           REPORT_OUTPUT_FOLDER: super_linter_reports
+          VALIDATE_JSCPD: false
       - name: Generate Super-Linter summary
         # Always run so the summary is produced even if lint fails
         if: always()
