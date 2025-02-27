@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Ensures full history for git diff
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,16 +28,23 @@ jobs:
       - name: Install JSCPD
         run: npm install -g jscpd
 
-      - name: Run JSCPD for the whole project
-        if: ${{ inputs.scope == 'project' }}
-        run: jscpd --reporters console,markdown,sarif --output report --threshold ${{ inputs.threshold }} --gitignore
-
-      - name: Run JSCPD on changed files
-        if: ${{ inputs.scope == 'pull_request' }}
+      - name: Debug Changed Files
         run: |
-          FILES=$(git diff ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} --name-only)
-          echo "$FILES"
-          jscpd --reporters console,markdown,sarif --output report --threshold ${{ inputs.threshold }} --gitignore $FILES
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+          echo "Head SHA: ${{ github.event.pull_request.head.sha }}"
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
+
+      - name: Run JSCPD on changed Python files
+        run: |
+          FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.py$' || true)
+          
+          if [[ -z "$FILES" ]]; then
+            echo "No Python files detected, skipping JSCPD."
+            exit 0
+          fi
+          
+          echo "Scanning changed Python files: $FILES"
+          jscpd --reporters console,markdown,sarif --output report --threshold 2 --gitignore $FILES
 
       - name: Check if report exists and set variable
         run: |
@@ -46,6 +53,9 @@ jobs:
           else
             echo "report_exists=false" >> $GITHUB_ENV
           fi
+
+      - name: Debug report variable
+        run: echo "Report exists: ${{ env.report_exists }}"
 
       - name: Upload JSCPD Report
         if: (success() || failure()) && env.report_exists == 'true'
@@ -61,9 +71,8 @@ jobs:
           file-path: report/jscpd-report.md
           comment-tag: jscpd-bot
 
-      # Upload scan results to GitHub Security tab
-      - name: Upload jspcd scan results to GitHub Security tab
+      - name: Upload JSCPD scan results to GitHub Security tab
         if: success() && env.report_exists == 'true'
         uses: github/codeql-action/upload-sarif@v3
         with:
-            sarif_file: 'report/jscpd-sarif.json'
+          sarif_file: 'report/jscpd-sarif.json'
