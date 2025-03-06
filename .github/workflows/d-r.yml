@@ -2,6 +2,8 @@ name: 'Dependency Review'
 on:
   pull_request:
    types: [opened, synchronize, reopened]
+   paths:
+      - "!requirements-2.txt"  # Exclude specific apps if you nee
 
 permissions:
   contents: read
