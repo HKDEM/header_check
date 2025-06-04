@@ -1,2 +1,2 @@
-flask==0.12  # This version has known security vulnerabilities (e.g., CVE-2018-1000656)
-requests==2.19.1  # Older version with known issues
+flask==2.2.5  # This version has known security vulnerabilities (e.g., CVE-2018-1000656)
+requests==2.32.2  # Older version with known issues
