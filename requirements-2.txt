@@ -1,3 +1,6 @@
 requests==2.32.2 
  
- 
+Django==1.11.29  # End-of-life, known vulnerabilities (e.g., CVE-2019-19844)
+PyYAML==3.13     # Vulnerable to arbitrary code execution (e.g., CVE-2017-18342)
+Jinja2==2.10.1    # Contains XSS vulnerabilities (e.g., CVE-2019-10906)
+
