@@ -15,17 +15,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pylint sarif-tools
+          pip install pylint pylint-sarif
 
-      - name: Run pylint
+      - name: Run pylint with SARIF output
         run: |
-          pylint --output-format=json my_package/ > pylint-output.json
+          pylint --output-format=sarif my_package/ > pylint-output.sarif
 
-      - name: Convert JSON to SARIF
-        run: |
-          json2sarif pylint-output.json > pylint-output.sarif
-
-      - name: Upload SARIF to GitHub
+      - name: Upload SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: pylint-output.sarif
