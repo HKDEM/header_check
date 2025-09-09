@@ -22,13 +22,15 @@ jobs:
           curl -L https://raw.githubusercontent.com/GrammaTech/pylint-sarif/master/pylint2sarif.py -o pylint2sarif.py
           curl -L https://raw.githubusercontent.com/GrammaTech/pylint-sarif/master/sarif-schema.json -o sarif-schema.json
       
-      - name: Patch pylint2sarif.py for Python3
+      - name: Patch pylint2sarif.py for Python3 issues
         run: |
           sed -i 's/sys.stderr.write(err)/sys.stderr.write(err.decode("utf-8") if isinstance(err, bytes) else err)/' pylint2sarif.py
+          sed -i 's/full_description = message.get("full_description")/full_description = message.get("full_description") or ""/' pylint2sarif.py
       
       - name: Run pylint and convert to SARIF
         run: |
           python pylint2sarif.py my_package/ > pylint-output.sarif
+
 
 
 
