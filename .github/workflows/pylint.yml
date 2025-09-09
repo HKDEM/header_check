@@ -16,16 +16,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pylint python_jsonschema_objects
-
-      - name: Download pylint2sarif.py
+      
+      - name: Download pylint2sarif.py and schema
         run: |
           curl -L https://raw.githubusercontent.com/GrammaTech/pylint-sarif/master/pylint2sarif.py -o pylint2sarif.py
-
+          curl -L https://raw.githubusercontent.com/GrammaTech/pylint-sarif/master/sarif-schema.json -o sarif-schema.json
+      
       - name: Run pylint and convert to SARIF
         run: |
           python pylint2sarif.py my_package/ > pylint-output.sarif
-
+      
       - name: Upload SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: pylint-output.sarif
+
