@@ -1,9 +1,9 @@
-name: Pylint Analysis
+name: Pylint SARIF Analysis
 
 on: [push, pull_request]
 
 jobs:
-  lint:
+  pylint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,18 +15,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pylint pylint-json2sarif
-      
-      - name: Run pylint
+          pip install pylint python_jsonschema_objects
+
+      - name: Download pylint2sarif.py
         run: |
-          pylint --output-format=json my_package/ > pylint-output.json
-      
-      - name: Convert to SARIF
+          curl -L https://raw.githubusercontent.com/GrammaTech/pylint-sarif/master/pylint2sarif.py -o pylint2sarif.py
+
+      - name: Run pylint and convert to SARIF
         run: |
-          pylint-json2sarif pylint-output.json > pylint-output.sarif
-      
-      - name: Upload SARIF
+          python pylint2sarif.py my_package/ > pylint-output.sarif
+
+      - name: Upload SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: pylint-output.sarif
-
