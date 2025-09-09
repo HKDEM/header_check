@@ -8,7 +8,7 @@ def check_header(header_name,headers):
     if header_name == "Strict-Transport-Security" or header_name == "HSTS":
         # Check if the header is missing entirely
         
-        header_value = headers.get("Strict-Transport-Security")
+        header_value = headers.get("Strict-Transport-Security") 
         
         if not header_value:
             # High severity for missing header
