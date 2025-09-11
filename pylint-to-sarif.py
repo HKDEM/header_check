@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Run pylint on a target file or folder and convert results to SARIF v2.1.0.
+Run pylint on a target Python file or folder and convert the results to SARIF v2.1.0.
 
 This script is fully Pylint-compliant and type-annotated.
 """
@@ -29,9 +29,8 @@ def run_pylint(target: str) -> List[Dict[str, Any]]:
         ["pylint", "--output-format=json", target],
         capture_output=True,
         text=True,
+        check=True,
     )
-    if result.returncode not in (0, 32):
-        print("Error running pylint:", result.stderr, file=sys.stderr)
 
     try:
         return json.loads(result.stdout or "[]")
@@ -104,9 +103,9 @@ def convert_to_sarif(pylint_results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def main() -> None:
-    """Main entry point for pylint-to-sarif."""
+    """Main entry point for pylint_to_sarif."""
     if len(sys.argv) < 3:
-        print("Usage: python pylint-to-sarif.py <target> <output.sarif>")
+        print("Usage: python pylint_to_sarif.py <target> <output.sarif>")
         sys.exit(1)
 
     target = sys.argv[1]
@@ -115,7 +114,7 @@ def main() -> None:
     pylint_results = run_pylint(target)
     sarif = convert_to_sarif(pylint_results)
 
-    output_file.write_text(json.dumps(sarif, indent=2))
+    output_file.write_text(json.dumps(sarif, indent=2), encoding="utf-8")
     print(f"SARIF report written to {output_file}")
 
 
