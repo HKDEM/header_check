@@ -24,7 +24,7 @@ jobs:
         run: pip install pylint
 
       - name: Run pylint and convert to SARIF
-        run: python pylint-to-sarif.py ./ pylint-output.sarif
+        run: python pylint_to_sarif.py ./ pylint-output.sarif
 
       - name: Upload SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
