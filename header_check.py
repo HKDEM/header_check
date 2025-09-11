@@ -2,7 +2,7 @@ import argparse
 import requests
 from termcolor import colored  # Import termcolor for colored output
 
-def check_header(header_name,headers):
+def check_header(header_name,headers): 
 
     #STRICT-TRANSPORT-SECURİTY (HSTS)
     if header_name == "Strict-Transport-Security" or header_name == "HSTS":
